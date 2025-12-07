@@ -1,16 +1,17 @@
-package com.example.lab_mobile.core
+package com.example.lab_mobile
 
 import android.content.Context
 import android.util.Log
 import androidx.datastore.preferences.preferencesDataStore
-import com.example.lab_mobile.MyAppDatabase
 import com.example.lab_mobile.auth.data.AuthRepository
 import com.example.lab_mobile.auth.data.remote.AuthDataSource
+import com.example.lab_mobile.core.TAG
 import com.example.lab_mobile.core.data.UserPreferencesRepository
 import com.example.lab_mobile.core.data.remote.Api
 import com.example.lab_mobile.todo.data.ItemRepository
 import com.example.lab_mobile.todo.data.remote.ItemService
 import com.example.lab_mobile.todo.data.remote.ItemWsClient
+import com.example.lab_mobile.utils.helpers.ConnectivityManagerNetworkMonitor
 
 val Context.userPreferencesDataStore by preferencesDataStore(
     name = "user_preferences"
@@ -27,8 +28,17 @@ class AppContainer(val context: Context) {
 
     private val database: MyAppDatabase by lazy { MyAppDatabase.getDatabase(context) }
 
+    val connectivityMonitor: ConnectivityManagerNetworkMonitor by lazy {
+        ConnectivityManagerNetworkMonitor(context)
+    }
+
     val itemRepository: ItemRepository by lazy {
-        ItemRepository(itemService, itemWsClient, database.itemDao())
+        ItemRepository(
+            itemService,
+            itemWsClient,
+            database.itemDao(),
+            database.pendingOperationDao(),
+            connectivityMonitor)
     }
 
     val authRepository: AuthRepository by lazy {

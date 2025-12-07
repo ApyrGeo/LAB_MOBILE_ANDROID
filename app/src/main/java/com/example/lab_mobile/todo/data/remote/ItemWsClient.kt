@@ -30,7 +30,7 @@ class ItemWsClient(private val okHttpClient: OkHttpClient) {
                 request,
                 ItemWebSocketListener(onEvent = onEvent, onClosed = onClosed, onFailure = onFailure)
             )
-            okHttpClient.dispatcher.executorService.shutdown()
+            //okHttpClient.dispatcher.executorService.shutdown()
         }
     }
 

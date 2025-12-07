@@ -27,4 +27,10 @@ interface ItemDao {
 
     @Query("DELETE FROM Items")
     suspend fun deleteAll()
+
+    @Query("SELECT * FROM Items WHERE _id = :id")
+    suspend fun getById(id: String): Item?
+
+    @Query("SELECT * FROM Items WHERE needsSync = 1")
+    suspend fun getItemsNeedingSync(): List<Item>
 }

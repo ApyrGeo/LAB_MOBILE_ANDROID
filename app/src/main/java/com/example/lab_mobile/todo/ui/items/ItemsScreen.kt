@@ -1,7 +1,10 @@
 package com.example.lab_mobile.todo.ui.items
 
 import android.util.Log
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Button
@@ -16,9 +19,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.lab_mobile.R
+import com.example.lab_mobile.utils.ui.MyNetworkStatus
+import com.example.lab_mobile.utils.ui.SyncStatusCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -30,27 +36,35 @@ fun ItemsScreen(onItemClick: (id: String?) -> Unit, onAddItem: () -> Unit, onLog
     )
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(text = stringResource(id = R.string.items)) },
-                actions = {
-                    Button(onClick = onLogout) { Text("Logout") }
-                }
-            )
+            Column {
+                TopAppBar(
+                    title = { Text(stringResource(R.string.items)) },
+                    actions = {
+                        Button(onClick = onLogout) { Text("Logout") }
+                    }
+                )
+                MyNetworkStatus()
+            }
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    Log.d("ItemsScreen", "add")
-                    onAddItem()
-                },
-            ) { Icon(Icons.Rounded.Add, "Add") }
+            FloatingActionButton(onClick = onAddItem) {
+                Icon(Icons.Rounded.Add, "Add")
+            }
         }
-    ) {
-        ItemList(
-            itemList = itemsUiState,
-            onItemClick = onItemClick,
-            modifier = Modifier.padding(it)
-        )
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxWidth()
+        ) {
+            SyncStatusCard()
+
+            ItemList(
+                itemList = itemsUiState,
+                onItemClick = onItemClick,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
     }
 }
 

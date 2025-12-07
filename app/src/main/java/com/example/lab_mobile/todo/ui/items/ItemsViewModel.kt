@@ -10,10 +10,14 @@ import com.example.lab_mobile.MyApplication
 import com.example.lab_mobile.core.TAG
 import com.example.lab_mobile.todo.data.Item
 import com.example.lab_mobile.todo.data.ItemRepository
+import com.example.lab_mobile.utils.helpers.SyncWorkManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-class ItemsViewModel(private val itemRepository: ItemRepository) : ViewModel() {
+class ItemsViewModel(
+    private val itemRepository: ItemRepository,
+    private val application: MyApplication
+) : ViewModel() {
     val uiState: Flow<List<Item>> = itemRepository.itemStream
 
     init {
@@ -25,6 +29,7 @@ class ItemsViewModel(private val itemRepository: ItemRepository) : ViewModel() {
         Log.d(TAG, "loadItems...")
         viewModelScope.launch {
             itemRepository.refresh()
+            SyncWorkManager.triggerSync(application)
         }
     }
 
@@ -33,7 +38,7 @@ class ItemsViewModel(private val itemRepository: ItemRepository) : ViewModel() {
             initializer {
                 val app =
                     (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as MyApplication)
-                ItemsViewModel(app.container.itemRepository)
+                ItemsViewModel(app.container.itemRepository, app)
             }
         }
     }

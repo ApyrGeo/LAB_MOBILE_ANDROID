@@ -59,7 +59,7 @@ fun ItemDetail(item: Item, onItemClick: OnItemFn) {
             modifier = Modifier.padding(top = 2.dp)
         )
         Text(
-            text = "Price: $${item.date}",
+            text = "Date: $${item.date}",
             style = TextStyle(fontSize = 14.sp),
             modifier = Modifier.padding(top = 2.dp)
         )

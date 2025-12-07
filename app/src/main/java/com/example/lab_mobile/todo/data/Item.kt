@@ -9,5 +9,7 @@ data class Item(
     val name: String = "",
     val nr_players: Int = 0,
     val date: String = "",
-    val family_friendly: Boolean = false
+    val family_friendly: Boolean = false,
+    val version: Int = 0,
+    var needsSync: Boolean = false
 )

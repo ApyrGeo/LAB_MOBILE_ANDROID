@@ -10,11 +10,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
 import com.example.lab_mobile.core.TAG
 import com.example.lab_mobile.ui.theme.MyAppTheme
+import com.example.lab_mobile.utils.helpers.requestNotificationPermission
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        requestNotificationPermission(this)
+
         setContent {
             Log.d(TAG, "onCreate")
             MyApp {

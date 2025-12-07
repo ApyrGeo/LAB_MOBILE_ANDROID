@@ -17,15 +17,25 @@ package com.example.lab_mobile
 
 import android.app.Application
 import android.util.Log
-import com.example.lab_mobile.core.AppContainer
 import com.example.lab_mobile.core.TAG
+import com.example.lab_mobile.utils.helpers.NetworkSyncManager
+import com.example.lab_mobile.utils.helpers.SyncWorkManager
+import com.example.lab_mobile.utils.ui.createSyncNotificationChannel
 
 class MyApplication : Application() {
     lateinit var container: AppContainer
+    private lateinit var networkSyncManager: NetworkSyncManager
 
     override fun onCreate() {
         super.onCreate()
         Log.d(TAG, "init")
         container = AppContainer(this)
+
+        createSyncNotificationChannel(this)
+
+        SyncWorkManager.initialize(this)
+
+        networkSyncManager = NetworkSyncManager(this)
+        networkSyncManager.startMonitoring()
     }
 }
