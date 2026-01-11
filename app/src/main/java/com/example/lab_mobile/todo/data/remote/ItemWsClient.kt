@@ -36,7 +36,11 @@ class ItemWsClient(private val okHttpClient: OkHttpClient) {
 
     fun closeSocket() {
         Log.d(TAG, "closeSocket")
-        webSocket.close(1000, "");
+        if (::webSocket.isInitialized) {
+            webSocket.close(1000, "")
+        } else {
+            Log.d(TAG, "webSocket not initialized, skipping close")
+        }
     }
 
     inner class ItemWebSocketListener(
@@ -76,6 +80,10 @@ class ItemWsClient(private val okHttpClient: OkHttpClient) {
     }
 
     fun authorize(token: String) {
+        if (!::webSocket.isInitialized) {
+            Log.d(TAG, "webSocket not initialized, cannot authorize")
+            return
+        }
         val auth = """
             {
               "type":"authorization",

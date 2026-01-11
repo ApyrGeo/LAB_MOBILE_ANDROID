@@ -51,7 +51,7 @@ class ItemViewModel(private val itemId: String?, private val itemRepository: Ite
     }
 
 
-    fun saveOrUpdateItem(name: String, nr_players: Int, date: String, family_friendly: Boolean) {
+    fun saveOrUpdateItem(name: String, nr_players: Int, date: String, family_friendly: Boolean, latitude: Double?, longitude: Double?) {
         viewModelScope.launch {
             Log.d(TAG, "saveOrUpdateItem...");
             try {
@@ -60,7 +60,9 @@ class ItemViewModel(private val itemId: String?, private val itemRepository: Ite
                     name = name,
                     nr_players = nr_players,
                     date = date,
-                    family_friendly = family_friendly
+                    family_friendly = family_friendly,
+                    latitude = latitude,
+                    longitude = longitude
                 )
                 val savedItem: Item;
                 if (itemId == null) {

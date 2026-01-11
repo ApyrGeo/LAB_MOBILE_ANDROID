@@ -1,9 +1,18 @@
 package com.example.lab_mobile
 
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -39,49 +48,78 @@ fun MyAppNavHost() {
         startDestination = authRoute
     ) {
         composable(itemsRoute) {
-            ItemsScreen(
-                onItemClick = { itemId ->
-                    Log.d("MyAppNavHost", "navigate to item $itemId")
-                    navController.navigate("$itemsRoute/$itemId")
-                },
-                onAddItem = {
-                    Log.d("MyAppNavHost", "navigate to new item")
-                    navController.navigate("$itemsRoute-new")
-                },
-                onLogout = {
-                    Log.d("MyAppNavHost", "logout")
-                    myAppViewModel.logout()
-                    Api.tokenInterceptor.token = null
-                    navController.navigate(authRoute) {
-                        popUpTo(0)
-                    }
-                })
+            var screenVisible by remember { mutableStateOf(false) }
+            LaunchedEffect(Unit) { screenVisible = true }
+            AnimatedVisibility(
+                visible = screenVisible,
+                enter = fadeIn(animationSpec = tween(220)) + slideInHorizontally(animationSpec = tween(220)) { it / 8 },
+                exit = fadeOut(animationSpec = tween(180)) + slideOutHorizontally(animationSpec = tween(180)) { it / 8 }
+            ) {
+                ItemsScreen(
+                    onItemClick = { itemId ->
+                        Log.d("MyAppNavHost", "navigate to item $itemId")
+                        navController.navigate("$itemsRoute/$itemId")
+                    },
+                    onAddItem = {
+                        Log.d("MyAppNavHost", "navigate to new item")
+                        navController.navigate("$itemsRoute-new")
+                    },
+                    onLogout = {
+                        Log.d("MyAppNavHost", "logout")
+                        myAppViewModel.logout()
+                        Api.tokenInterceptor.token = null
+                        navController.navigate(authRoute) {
+                            popUpTo(0)
+                        }
+                    })
+            }
         }
         composable(
             route = "$itemsRoute/{id}",
             arguments = listOf(navArgument("id") { type = NavType.StringType })
-        )
-        {
-            ItemScreen(
-                itemId = it.arguments?.getString("id"),
-                onClose = { onCloseItem() }
-            )
+        ) {
+            var screenVisible by remember { mutableStateOf(false) }
+            LaunchedEffect(Unit) { screenVisible = true }
+            AnimatedVisibility(
+                visible = screenVisible,
+                enter = fadeIn(animationSpec = tween(220)) + slideInHorizontally(animationSpec = tween(220)) { it / 8 },
+                exit = fadeOut(animationSpec = tween(180)) + slideOutHorizontally(animationSpec = tween(180)) { it / 8 }
+            ) {
+                ItemScreen(
+                    itemId = it.arguments?.getString("id"),
+                    onClose = { onCloseItem() }
+                )
+            }
         }
-        composable(route = "$itemsRoute-new")
-        {
-            ItemScreen(
-                itemId = null,
-                onClose = { onCloseItem() }
-            )
+        composable(route = "$itemsRoute-new") {
+            var screenVisible by remember { mutableStateOf(false) }
+            LaunchedEffect(Unit) { screenVisible = true }
+            AnimatedVisibility(
+                visible = screenVisible,
+                enter = fadeIn(animationSpec = tween(220)) + slideInHorizontally(animationSpec = tween(220)) { it / 8 },
+                exit = fadeOut(animationSpec = tween(180)) + slideOutHorizontally(animationSpec = tween(180)) { it / 8 }
+            ) {
+                ItemScreen(
+                    itemId = null,
+                    onClose = { onCloseItem() }
+                )
+            }
         }
-        composable(route = authRoute)
-        {
-            LoginScreen(
-                onClose = {
-                    Log.d("MyAppNavHost", "navigate to list")
-                    navController.navigate(itemsRoute)
-                }
-            )
+        composable(route = authRoute) {
+            var screenVisible by remember { mutableStateOf(false) }
+            LaunchedEffect(Unit) { screenVisible = true }
+            AnimatedVisibility(
+                visible = screenVisible,
+                enter = fadeIn(animationSpec = tween(220)) + slideInHorizontally(animationSpec = tween(220)) { it / 8 },
+                exit = fadeOut(animationSpec = tween(180)) + slideOutHorizontally(animationSpec = tween(180)) { it / 8 }
+            ) {
+                LoginScreen(
+                    onClose = {
+                        Log.d("MyAppNavHost", "navigate to list")
+                        navController.navigate(itemsRoute)
+                    }
+                )
+            }
         }
     }
     LaunchedEffect(userPreferencesUiState.token) {
